@@ -1,0 +1,10 @@
+spring:
+  cloud:
+    consul:
+      enabled: false
+      config:
+        enabled: false
+        prefixes:
+        - configuration
+        defaultContext: apps
+        profileSeparator: '::'

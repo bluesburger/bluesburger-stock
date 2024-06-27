@@ -1,0 +1,24 @@
+package br.com.bluesburger.stock.application.dto.order;
+
+import java.io.Serializable;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import br.com.bluesburger.stock.domain.entity.Status;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class ScheduleOrderResponse implements Serializable {
+	
+	private static final long serialVersionUID = -621830335594903665L;
+	
+	private String orderId;
+	
+	private Status status;
+}
