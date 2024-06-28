@@ -8,15 +8,14 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import br.com.bluesburger.stock.domain.entity.Status;
 import br.com.bluesburger.stock.domain.exception.OutOfStockException;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
@@ -75,8 +74,8 @@ public class OrderStockEntity implements Serializable {
     @Setter
     @NotNull
     @NonNull
-    @Column(name = "PRODUCT")
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne
+    @JoinColumn(name = "PRODUCT", nullable = false)
     private ProductEntity product;
     
     public OrderStockEntity reserve() {

@@ -1,6 +1,5 @@
 package br.com.bluesburger.stock.application.usecase;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -64,6 +63,6 @@ public class StockUseCase {
 					stock.setStatus(Status.CANCELED);
 					return stockAdapter.save(stock);
 				})
-				.map(stock -> new Stock(stock.getOrderId(), List.of())); // FIXME: incluir items;
+				.map(stock -> new Stock(stock.getOrderId()));
 	}
 }

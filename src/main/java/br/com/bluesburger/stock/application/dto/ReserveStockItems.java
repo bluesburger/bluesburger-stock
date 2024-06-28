@@ -1,9 +1,11 @@
-package br.com.bluesburger.stock.application.dto.order;
+package br.com.bluesburger.stock.application.dto;
+
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 
-import br.com.bluesburger.stock.domain.entity.Status;
+import br.com.bluesburger.stock.application.dto.order.OrderItem;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -19,11 +21,9 @@ import lombok.ToString;
 @EqualsAndHashCode
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor
-public class StockDto {
+public class ReserveStockItems {
 
-	private Long id;
-	
-	private Status status;
-	
 	private String orderId;
+	
+	private List<OrderItem> items;
 }

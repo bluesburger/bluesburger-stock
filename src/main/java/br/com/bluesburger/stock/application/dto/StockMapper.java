@@ -1,4 +1,4 @@
-package br.com.bluesburger.stock.application.dto.order;
+package br.com.bluesburger.stock.application.dto;
 
 import org.springframework.stereotype.Component;
 

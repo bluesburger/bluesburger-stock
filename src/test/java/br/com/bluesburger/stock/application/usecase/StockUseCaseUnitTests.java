@@ -6,7 +6,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,7 +37,7 @@ class StockUseCaseUnitTests {
 	StockUseCase stockUseCase;
 
 	@Test
-	void givenUnexistantPendingOrderWithTwoItems_WhenRequestReserveOrder_ThenShouldDecrementStockQuantity() {
+	void givenUnexistantPendingOrderWithTwoItems_WhenRequestReserveOrder_ThenShouldDecrementStockQuantity() throws Exception {
 		
 		// given
 		var orderId = "qwerty-asdfgh-zxcvbn-yuiopl";
@@ -46,8 +45,8 @@ class StockUseCaseUnitTests {
 		var command = new ReserveOrderRequest(orderId, items);
 		
 		int quantityProduct1 = 100, quantityProduct2 = 50;
-		var product1 = new ProductEntity(quantityProduct1, new ArrayList<>());
-		var product2 = new ProductEntity(quantityProduct2, new ArrayList<>());
+		var product1 = new ProductEntity("Produto 1", quantityProduct1);
+		var product2 = new ProductEntity("Produto 2", quantityProduct2);
 		
 		when(productAdapter.findById(1L)).thenReturn(Optional.of(product1));
 		when(productAdapter.findById(2L)).thenReturn(Optional.of(product2));
@@ -78,7 +77,7 @@ class StockUseCaseUnitTests {
 	
 	@Test
 	@SuppressWarnings("unchecked")
-	void givenExistantPendingOrderWithTwoItems_WhenRequestReserveOrder_ThenShouldDecrementStockQuantity() {
+	void givenExistantPendingOrderWithTwoItems_WhenRequestReserveOrder_ThenShouldDecrementStockQuantity() throws Exception {
 		
 		// given
 		var orderId = "qwerty-asdfgh-zxcvbn-yuiopl";
@@ -86,8 +85,8 @@ class StockUseCaseUnitTests {
 		var command = new ReserveOrderRequest(orderId, items);
 		
 		int quantityProduct1 = 100, quantityProduct2 = 50;
-		var product1 = new ProductEntity(quantityProduct1, new ArrayList<>());
-		var product2 = new ProductEntity(quantityProduct2, new ArrayList<>());
+		var product1 = new ProductEntity("Produto 1", quantityProduct1);
+		var product2 = new ProductEntity("Produto 2", quantityProduct2);
 		
 		when(productAdapter.findById(1L)).thenReturn(Optional.of(product1));
 		when(productAdapter.findById(2L)).thenReturn(Optional.of(product2));
@@ -117,14 +116,14 @@ class StockUseCaseUnitTests {
 	
 	@Test
 	@SuppressWarnings("unchecked")
-	void givenExistantReservedOrder_WhenRequestScheduledOrder_ThenShouldSaveScheduledOrder() {
+	void givenExistantReservedOrder_WhenRequestScheduledOrder_ThenShouldSaveScheduledOrder() throws Exception {
 		// given
 		var orderId = "qwerty-asdfgh-zxcvbn-yuiopl";
 		var command = new ScheduleOrderRequest(orderId);
 		
 		int quantityProduct1 = 100, quantityProduct2 = 50;
-		var product1 = new ProductEntity(quantityProduct1, new ArrayList<>());
-		var product2 = new ProductEntity(quantityProduct2, new ArrayList<>());
+		var product1 = new ProductEntity("Produto 1", quantityProduct1);
+		var product2 = new ProductEntity("Produto 2", quantityProduct2);
 		
 		var stockEntity = new OrderStockEntity(1L, null, null, Status.SCHEDULED, orderId, product1);
 		var stockEntity2 = new OrderStockEntity(2L, null, null, Status.SCHEDULED, orderId, product2);
@@ -149,12 +148,12 @@ class StockUseCaseUnitTests {
 	}
 	
 	@Test
-	void givenExistantOrder_WhenRequestCancelOrder_ThenShouldUpdateStockAsCanceled() {
+	void givenExistantOrder_WhenRequestCancelOrder_ThenShouldUpdateStockAsCanceled() throws Exception {
 		// given
 		var orderId = "qwerty-asdfgh-zxcvbn-yuiopl";
 		
 		int quantityProduct1 = 100;
-		var product1 = new ProductEntity(quantityProduct1, new ArrayList<>());
+		var product1 = new ProductEntity("Produto 1", quantityProduct1);
 		var stockEntity = new OrderStockEntity(1L, null, null, Status.SCHEDULED, orderId, product1);
 		when(stockAdapter.findFirstByOrderIdOrderByCreatedTimeDesc(orderId))
 			.thenReturn(Optional.of(stockEntity));

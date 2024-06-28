@@ -21,6 +21,6 @@ public interface StockRepository extends JpaRepository<OrderStockEntity, Long> {
 	
 	@Modifying
 	@Transactional
-	@Query(value = "delete from StockEntity o where o.ID = ?1")
+	@Query(value = "delete from OrderStockEntity o where o.ID = ?1")
 	void deleteById(Long id);
 }

@@ -20,7 +20,7 @@ public class SqsQueueSupport<T> {
 	@Autowired
     private ObjectMapper objectMapper;
 	
-	@Value("${cloud.aws.end-point.uri}")
+	@Value("${cloud.aws.endpoint.uri}")
     private String queueHost;
 	
 	@Value("${cloud.aws.accountId}")

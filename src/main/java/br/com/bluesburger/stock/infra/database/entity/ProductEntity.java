@@ -7,14 +7,15 @@ import java.util.List;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import br.com.bluesburger.stock.application.Ean;
 import br.com.bluesburger.stock.domain.exception.OutOfStockException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.PostPersist;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -54,14 +55,25 @@ public class ProductEntity implements Serializable {
     
     @NotNull
     @NonNull
-    @Column(name = "QUANTITY")
-    private Integer quantity;
+    @Column(name = "NAME")
+    private String name;
+    
+    @Column(name = "EAN")
+    private String ean;
     
     @NotNull
     @NonNull
-    @Column(name = "ORDERS")
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "product")
+    @Column(name = "QUANTITY")
+    private Integer quantity;
+    
+    @OneToMany(mappedBy = "product")
     private List<OrderStockEntity> orders;
+    
+    @PostPersist
+    void defineEan() throws Exception {
+    	var ean = Ean.defineEan(this.id);
+    	this.ean = ean;
+    }
     
     public ProductEntity reserve() {
     	if (quantity == 0) {
