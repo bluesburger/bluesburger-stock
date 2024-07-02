@@ -36,7 +36,7 @@ public class ProductAdapter {
 	public ProductEntity create(CreateStockProduct command) {
 		return productRepository.findFirstByName(command.getName())
 			.orElseGet(() -> {
-				var entity = new ProductEntity(command.getName(), command.getQuantity());
+				var entity = new ProductEntity(null, command.getName(), command.getQuantity());
 				return productRepository.save(entity);
 			});
 	}

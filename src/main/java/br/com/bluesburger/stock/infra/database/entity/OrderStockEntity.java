@@ -2,12 +2,12 @@ package br.com.bluesburger.stock.infra.database.entity;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import br.com.bluesburger.stock.domain.entity.Status;
-import br.com.bluesburger.stock.domain.exception.OutOfStockException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -78,17 +78,36 @@ public class OrderStockEntity implements Serializable {
     @JoinColumn(name = "PRODUCT", nullable = false)
     private ProductEntity product;
     
-    public OrderStockEntity reserve() {
-    	if (product.getQuantity() == 0) {
-    		throw new OutOfStockException();
-    	}
-    	
+    public OrderStockEntity(Long id, 
+    		@NotNull @NonNull Status status, 
+    		@NotNull @NonNull UUID orderId, 
+    		@NotNull @NonNull ProductEntity product) {
+    	this.id = id;
+    	this.status = status;
+    	this.orderId = orderId.toString();
+    	this.product = product;
+    	this.createdTime = LocalDateTime.now();
+    	this.validate();
+    }
+
+	public void validate() {
+		product.validate();
+		if (product.getId() == null || product.getId() <= 0) {
+			throw new IllegalArgumentException("É necessário um produto com id válido.");
+		}
+	}
+
+	public OrderStockEntity reserve() {
     	status = Status.RESERVED;
     	product.reserve();
     	return this;
     }
 
 	public OrderStockEntity schedule() {
+		if (!this.status.equals(Status.RESERVED)) {
+			throw new IllegalStateException("Stock cannot be scheduled before reserved.", null);
+		}
+		
 		status = Status.SCHEDULED;
 		return this;
 	}

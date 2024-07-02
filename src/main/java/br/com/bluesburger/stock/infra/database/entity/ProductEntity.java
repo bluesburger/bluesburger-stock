@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -23,7 +24,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -31,7 +31,6 @@ import lombok.ToString;
 @Getter
 @ToString
 @NoArgsConstructor
-@RequiredArgsConstructor
 @AllArgsConstructor
 @Table(schema = "bluesburger-stock", name = "TB_PRODUCT")
 @Builder
@@ -69,14 +68,34 @@ public class ProductEntity implements Serializable {
     @OneToMany(mappedBy = "product")
     private List<OrderStockEntity> orders;
     
+    public ProductEntity(Long id, @NotNull @NonNull String name, @NotNull @NonNull Integer quantity) {
+    	this.id = id;
+    	this.name = name;
+    	this.quantity = quantity;
+    	this.validate();
+    }
+    
+    public void validate() {
+    	ObjectUtils.requireNonEmpty(this.name, "Produto com nome inválido.");
+    	ObjectUtils.requireNonEmpty(this.quantity, "Produto com quantidade inválida.");
+    	
+    	if (this.quantity < 0) {
+    		throw new IllegalArgumentException("Product with invalid quantity");
+    	}
+    }
+    
     @PostPersist
-    void defineEan() throws Exception {
+    public void defineEan() throws Exception {
+    	if (this.id == null || this.id <= 0) {
+    		throw new IllegalArgumentException("Id is needed to define EAN");
+    	}
+    	
     	var ean = Ean.defineEan(this.id);
     	this.ean = ean;
     }
     
     public ProductEntity reserve() {
-    	if (quantity == 0) {
+    	if (quantity <= 0) {
     		throw new OutOfStockException();
     	}
     	

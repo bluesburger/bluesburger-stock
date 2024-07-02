@@ -21,8 +21,8 @@ import br.com.bluesburger.stock.application.dto.order.ScheduleOrderRequest;
 import br.com.bluesburger.stock.domain.entity.Status;
 import br.com.bluesburger.stock.infra.database.ProductAdapter;
 import br.com.bluesburger.stock.infra.database.StockAdapter;
-import br.com.bluesburger.stock.infra.database.entity.OrderStockEntity;
 import br.com.bluesburger.stock.infra.database.entity.ProductEntity;
+import br.com.bluesburger.stock.infra.database.entity.OrderStockEntity;
 
 @ExtendWith(MockitoExtension.class)
 class StockUseCaseUnitTests {
@@ -45,8 +45,8 @@ class StockUseCaseUnitTests {
 		var command = new ReserveOrderRequest(orderId, items);
 		
 		int quantityProduct1 = 100, quantityProduct2 = 50;
-		var product1 = new ProductEntity("Produto 1", quantityProduct1);
-		var product2 = new ProductEntity("Produto 2", quantityProduct2);
+		var product1 = new ProductEntity(1L, "Produto 1", quantityProduct1);
+		var product2 = new ProductEntity(2L, "Produto 2", quantityProduct2);
 		
 		when(productAdapter.findById(1L)).thenReturn(Optional.of(product1));
 		when(productAdapter.findById(2L)).thenReturn(Optional.of(product2));
@@ -85,8 +85,8 @@ class StockUseCaseUnitTests {
 		var command = new ReserveOrderRequest(orderId, items);
 		
 		int quantityProduct1 = 100, quantityProduct2 = 50;
-		var product1 = new ProductEntity("Produto 1", quantityProduct1);
-		var product2 = new ProductEntity("Produto 2", quantityProduct2);
+		var product1 = new ProductEntity(1L, "Produto 1", quantityProduct1);
+		var product2 = new ProductEntity(2L, "Produto 2", quantityProduct2);
 		
 		when(productAdapter.findById(1L)).thenReturn(Optional.of(product1));
 		when(productAdapter.findById(2L)).thenReturn(Optional.of(product2));
@@ -122,11 +122,11 @@ class StockUseCaseUnitTests {
 		var command = new ScheduleOrderRequest(orderId);
 		
 		int quantityProduct1 = 100, quantityProduct2 = 50;
-		var product1 = new ProductEntity("Produto 1", quantityProduct1);
-		var product2 = new ProductEntity("Produto 2", quantityProduct2);
+		var product1 = new ProductEntity(1L, "Produto 1", quantityProduct1);
+		var product2 = new ProductEntity(2L, "Produto 2", quantityProduct2);
 		
-		var stockEntity = new OrderStockEntity(1L, null, null, Status.SCHEDULED, orderId, product1);
-		var stockEntity2 = new OrderStockEntity(2L, null, null, Status.SCHEDULED, orderId, product2);
+		var stockEntity = new OrderStockEntity(1L, null, null, Status.SCHEDULED, orderId, product1).reserve();
+		var stockEntity2 = new OrderStockEntity(2L, null, null, Status.SCHEDULED, orderId, product2).reserve();
 		when(stockAdapter.findFirstByOrderIdAndStatusOrderByCreatedTimeDesc(orderId, Status.RESERVED))
 			.thenReturn(Optional.of(stockEntity), Optional.of(stockEntity2));
 		
@@ -153,7 +153,7 @@ class StockUseCaseUnitTests {
 		var orderId = "qwerty-asdfgh-zxcvbn-yuiopl";
 		
 		int quantityProduct1 = 100;
-		var product1 = new ProductEntity("Produto 1", quantityProduct1);
+		var product1 = new ProductEntity(1L, "Produto 1", quantityProduct1);
 		var stockEntity = new OrderStockEntity(1L, null, null, Status.SCHEDULED, orderId, product1);
 		when(stockAdapter.findFirstByOrderIdOrderByCreatedTimeDesc(orderId))
 			.thenReturn(Optional.of(stockEntity));
