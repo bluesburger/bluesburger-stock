@@ -2,6 +2,7 @@ package br.com.bluesburger.stock.infra.database.entity;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -79,11 +80,11 @@ public class OrderStockEntity implements Serializable {
     private ProductEntity product;
     
     public OrderStockEntity(Long id, 
-    		@NotNull @NonNull Status status, 
+    		Status status, 
     		@NotNull @NonNull UUID orderId, 
     		@NotNull @NonNull ProductEntity product) {
     	this.id = id;
-    	this.status = status;
+    	this.status = Optional.ofNullable(status).orElse(Status.PENDING);
     	this.orderId = orderId.toString();
     	this.product = product;
     	this.createdTime = LocalDateTime.now();
