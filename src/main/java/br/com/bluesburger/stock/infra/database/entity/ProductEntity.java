@@ -68,6 +68,10 @@ public class ProductEntity implements Serializable {
     @OneToMany(mappedBy = "product")
     private List<OrderStockEntity> orders;
     
+    public ProductEntity(@NotNull @NonNull String name, @NotNull @NonNull Integer quantity) {
+    	this(null, name, quantity);
+    }
+    
     public ProductEntity(Long id, @NotNull @NonNull String name, @NotNull @NonNull Integer quantity) {
     	this.id = id;
     	this.name = name;

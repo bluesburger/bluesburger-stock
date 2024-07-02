@@ -23,7 +23,7 @@ public class StockAdapter implements StockPort {
 		return stockRepository.findAll();
 	}
 	
-	public List<OrderStockEntity> getAllByStep(Status status) {
+	public List<OrderStockEntity> getAllByStatus(Status status) {
 		return stockRepository.findAllByStatusOrderByCreatedTime(status);
 	}
 

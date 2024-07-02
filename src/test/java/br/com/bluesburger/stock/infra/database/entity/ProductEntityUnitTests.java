@@ -61,24 +61,24 @@ class ProductEntityUnitTests {
 	@Test
 	void whenInstanceProductWithNullName_ThenShouldThrowException() {
 		// when
-		assertThrows(NullPointerException.class, () -> new ProductEntity(1L, null, 100));
-	}
-	
-	@Test
-	void whenInstanceProductWithEmptyName_ThenShouldThrowException() {
-		// when
-		assertThrows(IllegalArgumentException.class, () -> new ProductEntity(1L, "", 100));
+		assertThrows(NullPointerException.class, () -> new ProductEntity(null, 100));
 	}
 	
 	@Test
 	void whenInstanceProductWithNullQuantity_ThenShouldThrowException() {
 		// when
-		assertThrows(NullPointerException.class, () -> new ProductEntity(1L, "Product XPTO", null));
+		assertThrows(NullPointerException.class, () -> new ProductEntity("Product XPTO", null));
+	}
+	
+	@Test
+	void whenInstanceProductWithEmptyName_ThenShouldThrowException() {
+		// when
+		assertThrows(IllegalArgumentException.class, () -> new ProductEntity("", 100));
 	}
 	
 	@Test
 	void whenInstanceProductWithNegativeQuantity_ThenShouldThrowException() {
 		// when
-		assertThrows(IllegalArgumentException.class, () -> new ProductEntity(1L, "Product XPTO", -1));
+		assertThrows(IllegalArgumentException.class, () -> new ProductEntity("Product XPTO", -1));
 	}
 }

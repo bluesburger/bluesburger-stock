@@ -2,7 +2,6 @@ package br.com.bluesburger.stock.infra.sqs.events;
 
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.amazonaws.services.sqs.AmazonSQS;
@@ -20,11 +19,9 @@ public abstract class OrderEventPublisher<T extends OrderEvent> implements IOrde
 	
 	private final String queueName;
 	
-	@Autowired
-    private AmazonSQS amazonSQS;
+    private final AmazonSQS amazonSQS;
 	
-	@Autowired
-	private SqsQueueSupport<T> sqsQueueSupport;
+	private final SqsQueueSupport<T> sqsQueueSupport;
 
     @Override
     public Optional<String> publish(T event) {
@@ -35,9 +32,9 @@ public abstract class OrderEventPublisher<T extends OrderEvent> implements IOrde
             var result = amazonSQS.sendMessage(request);
             return Optional.ofNullable(result.getMessageId());
         } catch (JsonProcessingException e) {
-        	log.error("JsonProcessingException e : {} and stacktrace : {}", e.getMessage(), e);
+        	log.error("JsonProcessingException e : {}", e.getMessage(), e);
         } catch (Exception e) {
-        	log.error("Exception ocurred while pushing event to sqs : {} and stacktrace ; {}", e.getMessage(), e);
+        	log.error("Exception ocurred while pushing event to sqs : {}", e.getMessage(), e);
         }
         return Optional.empty();
     }

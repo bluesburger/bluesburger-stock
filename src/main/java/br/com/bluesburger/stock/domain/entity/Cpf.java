@@ -39,13 +39,13 @@ public class Cpf implements Serializable {
 			throw new CpfInvalidException();
 		}
 
-		try {
+//		try {
 			var isFormatted = CPFValidator.FORMATED.matcher(value).find();
 			var validator = new CPFValidator(isFormatted);
 			validator.assertValid(value);
 			return value;
-		} catch (InvalidStateException ise) {
-			throw new CpfInvalidException(ise);
-		}
+//		} catch (InvalidStateException ise) {
+//			throw new CpfInvalidException(ise);
+//		}
 	}
 }

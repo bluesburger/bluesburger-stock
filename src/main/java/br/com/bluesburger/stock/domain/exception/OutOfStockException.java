@@ -7,8 +7,4 @@ public class OutOfStockException extends RuntimeException {
 	public OutOfStockException() {
 		super();
 	}
-	
-	public OutOfStockException(Exception e) {
-		super(e);
-	}
 }

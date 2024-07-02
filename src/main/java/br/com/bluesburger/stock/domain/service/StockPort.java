@@ -10,7 +10,7 @@ public interface StockPort {
 	
 	List<OrderStockEntity> getAll();
 
-	List<OrderStockEntity> getAllByStep(Status step);
+	List<OrderStockEntity> getAllByStatus(Status step);
 	
 	Optional<OrderStockEntity> getById(Long stockId);
 

@@ -57,11 +57,10 @@ public class OrderStockEntity implements Serializable {
     @Column(name = "UPDATED_TIME")
     private LocalDateTime updatedTime;
     
-    @Setter
-    @Default
-    @NotNull
-    @NonNull
     @With
+    @Setter
+    @NotNull
+    @Default
     @Enumerated(EnumType.STRING)
     @Column(name = "STATUS")
     private Status status = Status.PENDING;
@@ -78,6 +77,12 @@ public class OrderStockEntity implements Serializable {
     @ManyToOne
     @JoinColumn(name = "PRODUCT", nullable = false)
     private ProductEntity product;
+    
+    public OrderStockEntity(Status status, 
+    		@NotNull @NonNull UUID orderId, 
+    		@NotNull @NonNull ProductEntity product) {
+    	this(null, status, orderId, product);
+    }
     
     public OrderStockEntity(Long id, 
     		Status status, 

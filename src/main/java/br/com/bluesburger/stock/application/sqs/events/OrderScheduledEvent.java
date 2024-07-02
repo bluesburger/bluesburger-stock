@@ -14,7 +14,7 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class OrderScheduledEvent extends OrderEvent {
 	
-	public static final String EVENT_NAME = "ORDER_ORDERED_EVENT";
+	public static final String EVENT_NAME = "ORDER_SCHEDULED_EVENT";
 
 	private static final long serialVersionUID = 7702500048926979660L;
 	

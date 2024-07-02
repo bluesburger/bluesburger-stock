@@ -35,12 +35,12 @@ public class StockUseCase {
 			.map(ProductEntity::reserve)
 			.map(e -> stockAdapter
 					.findFirstByOrderIdAndStatusOrderByCreatedTimeDesc(command.getOrderId(), Status.PENDING)
-					.map(f -> {
-						f.setStatus(Status.RESERVED);
-						return f;
-					})
-					.orElse(new OrderStockEntity(Status.RESERVED, command.getOrderId(), e))
+					.orElseGet(() -> new OrderStockEntity(command.getOrderId(), e))
 			)
+			.map(f -> {
+				f.setStatus(Status.RESERVED);
+				return f;
+			})
 			.map(stockAdapter::save)
 			.map(saved -> new OrderItem(saved.getId(), saved.getProduct().getQuantity()))
 			.toList();

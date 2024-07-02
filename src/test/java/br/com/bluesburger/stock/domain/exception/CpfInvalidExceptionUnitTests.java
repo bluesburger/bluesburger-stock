@@ -6,13 +6,17 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import br.com.bluesburger.stock.domain.exception.CpfInvalidException;
-
 @ExtendWith(MockitoExtension.class)
 class CpfInvalidExceptionUnitTests {
 
 	@Test
 	void shouldInstance() {
 		assertThat(new CpfInvalidException()).isNotNull();
+	}
+	
+	@Test
+	void shouldInstanceWithException() {
+		var ex = new Exception("Mensagem de erro");
+		assertThat(new CpfInvalidException(ex)).isNotNull();
 	}
 }

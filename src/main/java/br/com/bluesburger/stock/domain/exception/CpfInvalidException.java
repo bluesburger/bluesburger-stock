@@ -7,9 +7,8 @@ public class CpfInvalidException extends RuntimeException {
 	public CpfInvalidException() {
 		super();
 	}
-	
+
 	public CpfInvalidException(Exception e) {
 		super(e);
 	}
-
 }

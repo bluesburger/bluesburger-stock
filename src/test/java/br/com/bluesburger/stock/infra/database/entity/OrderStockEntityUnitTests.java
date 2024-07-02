@@ -13,7 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import br.com.bluesburger.stock.domain.entity.Status;
 
 @ExtendWith(MockitoExtension.class)
-class StockEntityUnitTests {
+class OrderStockEntityUnitTests {
 	
 	private static final UUID ORDER_ID = UUID.fromString("ddedf1ab-0b2f-4766-a9fc-104bedc98492");
 	
@@ -27,7 +27,7 @@ class StockEntityUnitTests {
 	@Test
 	void givenOneProduct_WhenReserveNewStock_ThenShouldChangeStatusAndReserveProduct() {
 		// given
-		var newStock = new OrderStockEntity(null, Status.PENDING, ORDER_ID, product);
+		var newStock = new OrderStockEntity(Status.PENDING, ORDER_ID, product);
 		
 		// when
 		var reservedStock = newStock.reserve();
@@ -71,6 +71,17 @@ class StockEntityUnitTests {
 	}
 	
 	@Test
+	void whenInstanceStockWithoutStatus_ThenShouldDefineDefaultStatus() {
+		// given
+		var newStock = new OrderStockEntity(null, ORDER_ID, product);
+		
+		// then
+		assertThat(newStock)
+			.isNotNull()
+			.hasFieldOrPropertyWithValue("status", Status.PENDING);
+	}
+	
+	@Test
 	void givenProductWithNullId_WhenInstanceStock_ThenShouldThrowException() {
 		var unexistantProduct = new ProductEntity(null, "Unexistant Product", 1000);
 		// given
@@ -102,17 +113,17 @@ class StockEntityUnitTests {
 	}
 	
 	@Test
-	void whenTryInstanceStockWithoutStatus_ThenShouldThrowException() {
-		assertThrows(NullPointerException.class, () -> new OrderStockEntity(null, null, ORDER_ID, product));
-	}
-	
-	@Test
 	void whenTryInstanceStockWithoutOrderId_ThenShouldThrowException() {
-		assertThrows(NullPointerException.class, () -> new OrderStockEntity(null, Status.PENDING, null, product));
+		assertThrows(NullPointerException.class, () -> new OrderStockEntity(Status.PENDING, null, product));
 	}
 	
 	@Test
 	void whenTryInstanceStockWithoutProduct_ThenShouldThrowException() {
-		assertThrows(NullPointerException.class, () -> new OrderStockEntity(null, Status.PENDING, ORDER_ID, null));
+		assertThrows(NullPointerException.class, () -> new OrderStockEntity(Status.PENDING, ORDER_ID, null));
+	}
+	
+	@Test
+	void whenTryInstanceStockWithoutOrderIdAndProduct_ThenShouldThrowException() {
+		assertThrows(NullPointerException.class, () -> new OrderStockEntity(Status.PENDING, null, null));
 	}
 }
