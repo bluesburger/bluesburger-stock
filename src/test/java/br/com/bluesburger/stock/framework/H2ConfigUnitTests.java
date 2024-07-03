@@ -14,8 +14,6 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import br.com.bluesburger.stock.framework.H2Config;
-
 @ExtendWith(MockitoExtension.class)
 class H2ConfigUnitTests {
 

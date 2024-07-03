@@ -32,7 +32,7 @@ public class StockEventListener {
 	
 	private final OrderEventPublisher<OrderScheduledEvent> orderScheculedEventPublisher;
 	
-	@SqsListener(value = "queue-order-stock-command.fifo", deletionPolicy = SqsMessageDeletionPolicy.NEVER)
+	@SqsListener(value = "${queue-order-stock-command:queue-order-stock-command.fifo}", deletionPolicy = SqsMessageDeletionPolicy.NEVER)
 	public void handle(@Payload OrderStockCommand command, Acknowledgment ack) {
 		log.info("Command received: {}", command.toString());
 		var request = new ReserveOrderRequest(command.getOrderId(), command.getItems());
@@ -44,7 +44,7 @@ public class StockEventListener {
 		}
 	}
 	
-	@SqsListener(value = "queue-schedule-order-command.fifo", deletionPolicy = SqsMessageDeletionPolicy.NEVER)
+	@SqsListener(value = "${queue-schedule-order-command:queue-schedule-order-command.fifo}", deletionPolicy = SqsMessageDeletionPolicy.NEVER)
 	public void handle(@Payload OrderScheduledCommand command, Acknowledgment ack) {
 		log.info("Command received: {}", command.toString());
 		var request = new ScheduleOrderRequest(command.getOrderId());
@@ -55,7 +55,7 @@ public class StockEventListener {
 			.ifPresent(id -> ack.acknowledge());
 	}
 
-	@SqsListener(value = "queue-cancel-order-stock-command.fifo", deletionPolicy = SqsMessageDeletionPolicy.NEVER)
+	@SqsListener(value = "${queue-cancel-order-stock-command:queue-cancel-order-stock-command.fifo}", deletionPolicy = SqsMessageDeletionPolicy.NEVER)
 	public void handle(@Payload CancelOrderStockCommand command, Acknowledgment ack) {
 		log.info("Command received: {}", command.toString());
 		stockUseCase.cancelOrder(command.getOrderId())

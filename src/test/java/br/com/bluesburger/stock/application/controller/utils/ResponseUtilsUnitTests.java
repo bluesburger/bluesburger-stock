@@ -9,8 +9,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 
-import br.com.bluesburger.stock.application.controller.utils.ResponseUtils;
-
 @ExtendWith(MockitoExtension.class)
 class ResponseUtilsUnitTests {
 

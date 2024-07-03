@@ -5,7 +5,6 @@ import java.util.Objects;
 
 import br.com.bluesburger.stock.domain.exception.CpfInvalidException;
 import br.com.caelum.stella.validation.CPFValidator;
-import br.com.caelum.stella.validation.InvalidStateException;
 import io.micrometer.common.lang.NonNull;
 import jakarta.persistence.Embeddable;
 import jakarta.validation.constraints.NotNull;

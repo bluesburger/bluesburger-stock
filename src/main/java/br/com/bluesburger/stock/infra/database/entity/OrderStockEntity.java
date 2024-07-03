@@ -33,7 +33,7 @@ import lombok.With;
 
 @Entity
 @Getter
-@ToString
+@ToString(exclude = { "product" })
 @NoArgsConstructor
 @RequiredArgsConstructor
 @AllArgsConstructor

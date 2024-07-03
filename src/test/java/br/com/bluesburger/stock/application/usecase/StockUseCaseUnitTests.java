@@ -21,8 +21,8 @@ import br.com.bluesburger.stock.application.dto.order.ScheduleOrderRequest;
 import br.com.bluesburger.stock.domain.entity.Status;
 import br.com.bluesburger.stock.infra.database.ProductAdapter;
 import br.com.bluesburger.stock.infra.database.StockAdapter;
-import br.com.bluesburger.stock.infra.database.entity.ProductEntity;
 import br.com.bluesburger.stock.infra.database.entity.OrderStockEntity;
+import br.com.bluesburger.stock.infra.database.entity.ProductEntity;
 
 @ExtendWith(MockitoExtension.class)
 class StockUseCaseUnitTests {

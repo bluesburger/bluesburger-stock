@@ -20,8 +20,6 @@ import org.springframework.boot.actuate.endpoint.web.annotation.ControllerEndpoi
 import org.springframework.boot.actuate.endpoint.web.annotation.ServletEndpointsSupplier;
 import org.springframework.core.env.Environment;
 
-import br.com.bluesburger.stock.framework.WebConfig;
-
 @ExtendWith(MockitoExtension.class)
 class WebConfigUnitTests {
 

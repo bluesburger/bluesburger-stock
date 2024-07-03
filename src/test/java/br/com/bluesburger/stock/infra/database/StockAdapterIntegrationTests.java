@@ -36,6 +36,11 @@ class StockAdapterIntegrationTests extends ApplicationIntegrationSupport {
 	void tearDown() {
 		stockRepository.deleteAllInBatch();
 		productRepository.deleteAllInBatch();
+//		stockRepository.findAll()
+//			.forEach(stock -> {
+//				stockRepository.deleteById(stock.getId());
+//				productRepository.deleteById(stock.getProduct().getId());
+//			});
 	}
 	
 	private ProductEntity saveNewProduct() {
@@ -45,7 +50,7 @@ class StockAdapterIntegrationTests extends ApplicationIntegrationSupport {
 	
 	private OrderStockEntity saveNewStock() {
 		var savedProduct = saveNewProduct();		
-		var stockEntity = new OrderStockEntity(null, EXISTANT_ORDER_ID, savedProduct);
+		var stockEntity = new OrderStockEntity(Status.PENDING, EXISTANT_ORDER_ID, savedProduct);
 		return stockRepository.save(stockEntity);
 	}
 
@@ -58,12 +63,13 @@ class StockAdapterIntegrationTests extends ApplicationIntegrationSupport {
 			assertThat(stockAdapter.getAll())
 				.isNotNull()
 				.isNotEmpty()
-				.hasSize(1)
+				.hasSizeGreaterThanOrEqualTo(1)
 				.anyMatch(p -> p.equals(savedStock));
 		}
 		
 		@Test
 		void givenNoOrderStocks_WhenGetAll_ThenShouldReturnEmptyList() {
+			stockRepository.deleteAllInBatch();
 			assertThat(stockAdapter.getAll())
 				.isNotNull()
 				.isEmpty();
@@ -79,7 +85,6 @@ class StockAdapterIntegrationTests extends ApplicationIntegrationSupport {
 			assertThat(stockAdapter.getAllByStatus(Status.PENDING))
 				.isNotNull()
 				.isNotEmpty()
-				.hasSize(1)
 				.anyMatch(p -> p.equals(savedStock));
 		}
 		

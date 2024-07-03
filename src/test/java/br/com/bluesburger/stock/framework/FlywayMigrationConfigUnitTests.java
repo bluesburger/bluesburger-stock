@@ -10,8 +10,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.autoconfigure.flyway.FlywayMigrationInitializer;
 
-import br.com.bluesburger.stock.framework.FlywayMigrationConfig;
-
 @ExtendWith(MockitoExtension.class)
 class FlywayMigrationConfigUnitTests {
 	

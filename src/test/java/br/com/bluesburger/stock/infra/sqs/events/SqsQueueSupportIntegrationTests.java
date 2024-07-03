@@ -57,7 +57,8 @@ class SqsQueueSupportIntegrationTests extends QueueIntegrationSupport {
 		var queueUrl = sqsQueueSupport.buildQueueUrl(queueName);
 		
 		// then
+		
 		assertThat(queueUrl).isNotNull()
-			.isEqualTo("http://localhost:1234/1234567890/" + queueName);
+			.isEqualTo(String.format("http://127.0.0.1:%s/%s/%s", getPort(), "000000000000", queueName));
 	}
 }

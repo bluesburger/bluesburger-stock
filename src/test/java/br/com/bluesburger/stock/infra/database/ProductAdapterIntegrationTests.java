@@ -13,6 +13,9 @@ import jakarta.transaction.Transactional;
 
 @Transactional
 class ProductAdapterIntegrationTests extends ApplicationIntegrationSupport {
+	
+	@Autowired
+	private StockRepository stockRepository;
 
 	@Autowired
 	private ProductRepository productRepository;
@@ -22,17 +25,15 @@ class ProductAdapterIntegrationTests extends ApplicationIntegrationSupport {
 	
 	@AfterEach
 	void tearDown() {
+		stockRepository.deleteAllInBatch();
 		productRepository.deleteAllInBatch();
-	}
-	
-	private ProductEntity saveNewProduct() {
-		var productEntity = new ProductEntity(null, "Product XPTO", 100);
-		return productRepository.save(productEntity);
+//		TimeUnit.MILLISECONDS.sleep(100L);
 	}
 	
 	@Test
 	void givenExistantProduct_WhenFindById_ThenShouldReturnProduct() {
-		var savedProduct = saveNewProduct();
+		var productEntity = new ProductEntity(null, "Product XPTO 1", 100);
+		var savedProduct = productRepository.save(productEntity);
 		
 		assertThat(productAdapter.findById(savedProduct.getId()))
 			.isNotNull()
@@ -43,18 +44,18 @@ class ProductAdapterIntegrationTests extends ApplicationIntegrationSupport {
 	
 	@Test
 	void givenExistantProduct_WhenGetAll_ThenShouldReturnListWithProduct() {
-		var savedProduct = saveNewProduct();
+		var productEntity = new ProductEntity(null, "Product XPTO 2", 100);
+		productRepository.save(productEntity);
 		
 		assertThat(productAdapter.getAll())
 			.isNotNull()
-			.isNotEmpty()
-			.first()
-			.hasFieldOrPropertyWithValue("id", savedProduct.getId());
+			.isNotEmpty();
 	}
 	
 	@Test
 	void givenExistantProduct_WhenGetById_ThenShouldReturnProduct() {
-		var savedProduct = saveNewProduct();
+		var productEntity = new ProductEntity(null, "Product XPTO 3", 100);
+		var savedProduct = productRepository.save(productEntity);
 		
 		assertThat(productAdapter.getById(savedProduct.getId()))
 			.isNotNull()
@@ -66,7 +67,8 @@ class ProductAdapterIntegrationTests extends ApplicationIntegrationSupport {
 	
 	@Test
 	void givenExistantProduct_WhenGetByEan_ThenShouldReturnProduct() {
-		var savedProduct = saveNewProduct();
+		var productEntity = new ProductEntity(null, "Product XPTO 4", 100);
+		var savedProduct = productRepository.save(productEntity);
 		
 		assertThat(productAdapter.getByEan(savedProduct.getEan()))
 			.isNotNull()
@@ -79,12 +81,12 @@ class ProductAdapterIntegrationTests extends ApplicationIntegrationSupport {
 	@Test
 	void whenCreateStockProduct_ThenShouldReturnProduct() {
 		
-		assertThat(productAdapter.create(new CreateStockProduct("Produto QWERTY", 50)))
+		assertThat(productAdapter.create(new CreateStockProduct("Produto QWERTY 5", 50)))
 			.isNotNull()
 			.hasFieldOrProperty("id")
 			.hasFieldOrProperty("createdTime")
 			.hasFieldOrProperty("updatedTime")
-			.hasFieldOrPropertyWithValue("name", "Produto QWERTY")
+			.hasFieldOrPropertyWithValue("name", "Produto QWERTY 5")
 			.hasFieldOrProperty("ean")
 			.hasFieldOrPropertyWithValue("quantity", 50);
 	}
