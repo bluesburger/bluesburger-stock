@@ -9,8 +9,9 @@ COPY pom.xml .
 COPY src ./src
 
 # Compilando o aplicativo e gerando o arquivo JAR
-RUN mvn clean install -DskipTests=true
+# RUN mvn clean install -DskipTests=true
 # RUN mvn clean install -Ppackage
+RUN mvn clean install -Punit-test
 
 # Usando a imagem do Amazon Corretto para executar o aplicativo
 FROM amazoncorretto:17-al2-jdk

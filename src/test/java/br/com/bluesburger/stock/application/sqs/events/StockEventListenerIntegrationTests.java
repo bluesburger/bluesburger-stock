@@ -31,7 +31,7 @@ import br.com.bluesburger.stock.infra.database.entity.ProductEntity;
 import br.com.bluesburger.stock.support.QueueIntegrationSupport;
 
 @SuppressWarnings("unused")
-class StockEventListenerIntegrationtTests extends QueueIntegrationSupport {
+class StockEventListenerIntegrationTests extends QueueIntegrationSupport {
 	private static final UUID ORDER_ID = UUID.fromString("ddedf1ab-0b2f-4766-a9fc-104bedc98492");
 	private static final Integer MAX_SECONDS = 10;
 
