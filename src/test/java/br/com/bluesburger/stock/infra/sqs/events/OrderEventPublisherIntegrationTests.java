@@ -9,9 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import br.com.bluesburger.stock.application.sqs.events.OrderOrderedEvent;
 import br.com.bluesburger.stock.domain.entity.Status;
-import br.com.bluesburger.stock.support.ApplicationIntegrationSupport;
+import br.com.bluesburger.stock.support.QueueIntegrationSupport;
 
-class OrderEventPublisherIntegrationTests extends ApplicationIntegrationSupport {
+class OrderEventPublisherIntegrationTests extends QueueIntegrationSupport {
 	
 	private static final UUID ORDER_ID = UUID.fromString("ddedf1ab-0b2f-4766-a9fc-104bedc98492");
 
