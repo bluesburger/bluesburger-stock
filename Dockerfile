@@ -9,16 +9,14 @@ COPY pom.xml .
 COPY src ./src
 
 # Compilando o aplicativo e gerando o arquivo JAR
-#RUN mvn clean install -DskipTests=true
-RUN mvn clean install -Ppackage
+RUN mvn clean install -DskipTests=true
+# RUN mvn clean install -Ppackage
 
 # Usando a imagem do Amazon Corretto para executar o aplicativo
 FROM amazoncorretto:17-al2-jdk
 
-WORKDIR /app
-
 # Copie o JAR gerado a partir da etapa anterior para o contêiner
-COPY --from=builder /app/target/bluesburguer-order-0.0.1-SNAPSHOT.jar .
+COPY --from=builder /app/target/bluesburguer-stock-0.0.1-SNAPSHOT.jar .
 COPY --from=builder /app/target/*.properties .
 
 
@@ -26,4 +24,4 @@ COPY --from=builder /app/target/*.properties .
 EXPOSE 8000
 
 # Comando para iniciar o aplicativo
-ENTRYPOINT ["java", "-jar", "bluesburguer-order-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["java", "-jar", "bluesburguer-stock-0.0.1-SNAPSHOT.jar"]
