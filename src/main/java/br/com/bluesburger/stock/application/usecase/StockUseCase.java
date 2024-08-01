@@ -12,6 +12,8 @@ import br.com.bluesburger.stock.application.dto.order.ScheduleOrderResponse;
 import br.com.bluesburger.stock.domain.entity.Status;
 import br.com.bluesburger.stock.domain.entity.Stock;
 import br.com.bluesburger.stock.domain.exception.OrderNotFoundException;
+import br.com.bluesburger.stock.infra.adapter.OrderClient;
+import br.com.bluesburger.stock.infra.adapter.dto.OrderItemDto;
 import br.com.bluesburger.stock.infra.database.ProductAdapter;
 import br.com.bluesburger.stock.infra.database.StockAdapter;
 import br.com.bluesburger.stock.infra.database.entity.OrderStockEntity;
@@ -25,11 +27,13 @@ import lombok.RequiredArgsConstructor;
 public class StockUseCase {
 	private final StockAdapter stockAdapter;
 	private final ProductAdapter productAdapter;
+	private final OrderClient orderClient;
 
 	@Transactional(dontRollbackOn = EntityExistsException.class)
 	public ReserveOrderResponse reserveOrder(ReserveOrderRequest command) {
-		var items = command.getItems().stream()
-			.map(OrderItem::getId)
+		var orderDto = orderClient.getById(command.getOrderId());
+		var items = orderDto.getItems().stream()
+			.map(OrderItemDto::getId)
 			.map(productAdapter::findById)
 			.flatMap(Optional::stream)
 			.map(ProductEntity::reserve)
