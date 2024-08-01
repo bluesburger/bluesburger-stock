@@ -32,22 +32,30 @@ public class StockUseCase {
 	@Transactional(dontRollbackOn = EntityExistsException.class)
 	public ReserveOrderResponse reserveOrder(ReserveOrderRequest command) {
 		var orderDto = orderClient.getById(command.getOrderId());
+		
 		var items = orderDto.getItems().stream()
-			.map(OrderItemDto::getId)
-			.map(productAdapter::findById)
-			.flatMap(Optional::stream)
-			.map(ProductEntity::reserve)
-			.map(e -> stockAdapter
-					.findFirstByOrderIdAndStatusOrderByCreatedTimeDesc(command.getOrderId(), Status.PENDING)
-					.orElseGet(() -> new OrderStockEntity(command.getOrderId(), e))
-			)
-			.map(f -> {
-				f.setStatus(Status.RESERVED);
-				return f;
-			})
-			.map(stockAdapter::save)
-			.map(saved -> new OrderItem(saved.getId(), saved.getProduct().getQuantity()))
-			.toList();
+				.map(itemDto -> {
+					return productAdapter.findById(itemDto.getId())
+						.map(pe -> {
+							ProductEntity e = null;
+							for (int i = itemDto.getQuantity(); i > 0; i--) {
+								e = pe.reserve();
+							}
+							return e;
+						});
+				})
+				.flatMap(Optional::stream)
+				.map(e -> stockAdapter
+						.findFirstByOrderIdAndStatusOrderByCreatedTimeDesc(command.getOrderId(), Status.PENDING)
+						.orElseGet(() -> new OrderStockEntity(command.getOrderId(), e))
+				)
+				.map(f -> {
+					f.setStatus(Status.RESERVED);
+					return f;
+				})
+				.map(stockAdapter::save)
+				.map(saved -> new OrderItem(saved.getId(), saved.getProduct().getQuantity()))
+				.toList();
 		return new ReserveOrderResponse(command.getOrderId(), items);
 	}
 	
