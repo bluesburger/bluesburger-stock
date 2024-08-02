@@ -12,6 +12,8 @@ import br.com.bluesburger.stock.application.dto.order.ScheduleOrderResponse;
 import br.com.bluesburger.stock.domain.entity.Status;
 import br.com.bluesburger.stock.domain.entity.Stock;
 import br.com.bluesburger.stock.domain.exception.OrderNotFoundException;
+import br.com.bluesburger.stock.infra.adapter.OrderClient;
+import br.com.bluesburger.stock.infra.adapter.dto.OrderItemDto;
 import br.com.bluesburger.stock.infra.database.ProductAdapter;
 import br.com.bluesburger.stock.infra.database.StockAdapter;
 import br.com.bluesburger.stock.infra.database.entity.OrderStockEntity;
@@ -25,25 +27,35 @@ import lombok.RequiredArgsConstructor;
 public class StockUseCase {
 	private final StockAdapter stockAdapter;
 	private final ProductAdapter productAdapter;
+	private final OrderClient orderClient;
 
 	@Transactional(dontRollbackOn = EntityExistsException.class)
 	public ReserveOrderResponse reserveOrder(ReserveOrderRequest command) {
-		var items = command.getItems().stream()
-			.map(OrderItem::getId)
-			.map(productAdapter::findById)
-			.flatMap(Optional::stream)
-			.map(ProductEntity::reserve)
-			.map(e -> stockAdapter
-					.findFirstByOrderIdAndStatusOrderByCreatedTimeDesc(command.getOrderId(), Status.PENDING)
-					.orElseGet(() -> new OrderStockEntity(command.getOrderId(), e))
-			)
-			.map(f -> {
-				f.setStatus(Status.RESERVED);
-				return f;
-			})
-			.map(stockAdapter::save)
-			.map(saved -> new OrderItem(saved.getId(), saved.getProduct().getQuantity()))
-			.toList();
+		var orderDto = orderClient.getById(command.getOrderId());
+		
+		var items = orderDto.getItems().stream()
+				.map(itemDto -> {
+					return productAdapter.findById(itemDto.getId())
+						.map(pe -> {
+							ProductEntity e = null;
+							for (int i = itemDto.getQuantity(); i > 0; i--) {
+								e = pe.reserve();
+							}
+							return e;
+						});
+				})
+				.flatMap(Optional::stream)
+				.map(e -> stockAdapter
+						.findFirstByOrderIdAndStatusOrderByCreatedTimeDesc(command.getOrderId(), Status.PENDING)
+						.orElseGet(() -> new OrderStockEntity(command.getOrderId(), e))
+				)
+				.map(f -> {
+					f.setStatus(Status.RESERVED);
+					return f;
+				})
+				.map(stockAdapter::save)
+				.map(saved -> new OrderItem(saved.getId(), saved.getProduct().getQuantity()))
+				.toList();
 		return new ReserveOrderResponse(command.getOrderId(), items);
 	}
 	

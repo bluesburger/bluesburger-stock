@@ -1,0 +1,105 @@
+version: "3.8"
+
+services:
+  localstack:
+    container_name: "${LOCALSTACK_DOCKER_NAME:-localstack-main}"
+    image: localstack/localstack
+    ports:
+      - "127.0.0.1:4566:4566"            # LocalStack Gateway
+      - "127.0.0.1:4510-4559:4510-4559"  # external services port range
+    networks:
+      - bluesburguer-network
+    environment:
+      # LocalStack configuration: https://docs.localstack.cloud/references/configuration/
+      - DEBUG=${DEBUG:-1}
+      - SERVICES=sqs
+      - DEFAULT_REGION=us-east-1
+      - AWS_DEFAULT_REGION=us-east-1
+      - DATA_DIR=/tmp/localstack/data
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_KEY}
+    volumes:
+      - "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      # - "./scripts/localstack:/etc/localstack/init/ready.d"  # ready hook
+  
+  consul:
+    image: hashicorp/consul:latest
+    hostname: "consul"
+    ports:
+      - "8400:8400"
+      - "8500:8500"
+      - "8600:8600"
+    networks:
+      - bluesburguer-network
+    healthcheck:
+#      test: wget --no-verbose --tries=1 --spider http://localhost:8500/v1/status/leader || exit 1
+      test: ["CMD", "curl", "-X", "GET", "localhost:8500/v1/status/leader"]
+      interval: 1m
+      timeout: 3s
+      retries: 60
+   
+  application:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: stock:latest
+    container_name: stock
+    ports:
+      - "30000:8000"
+    networks:
+      - bluesburguer-network
+    depends_on:
+      localstack:
+        condition: service_healthy
+      consul:
+        condition: service_healthy
+      db:
+        condition: service_started
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - CONSUL_HOST=consul
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_KEY}
+      - AWS_ACCOUNT_ID=0000000000
+      - AWS_REGION=us-east-1
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db/stock?useSSL=false&useTimezone=true&serverTimezone=UTC
+      - SPRING_DATASOURCE_USERNAME=stock
+      - SPRING_DATASOURCE_PASSWORD=stock@2024
+      - SPRING_JPA_GENERATE_DDL=true
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+    volumes:
+      - db_app:/var/lib/app
+    healthcheck:
+      test: "curl --fail --silent localhost:8000/actuator/health | grep UP || exit 1"
+      interval: 1m
+      timeout: 3s
+      retries: 3
+      start_period: 30s
+
+  db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root@2024
+      MYSQL_USER: "stock"
+      MYSQL_PASSWORD: "stock@2024"
+      MYSQL_DATABASE: "stock"
+    ports:
+      - "3306:3306"
+    networks:
+      - bluesburguer-network
+    # volumes:
+    #   - db_mysql:/var/lib/mysql
+    # healthcheck:
+    #   test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+    #   timeout: 20s
+    #   retries: 10
+    
+networks:
+  bluesburguer-network:
+    driver: bridge
+
+volumes:
+  db_app:
+  db_mysql:
