@@ -1,0 +1,16 @@
+# Usando a imagem do Amazon Corretto para executar o aplicativo
+FROM amazoncorretto:17-al2-jdk
+
+# Definindo o diretório de trabalho no contêiner
+WORKDIR /app
+
+# Copie o JAR gerado a partir da etapa anterior para o contêiner
+COPY target/bluesburguer-stock-0.0.1-SNAPSHOT.jar .
+COPY target/*.properties .
+
+
+# Expondo a porta que o aplicativo está ouvindo
+EXPOSE 8080
+
+# Comando para iniciar o aplicativo
+ENTRYPOINT ["java", "-jar", "bluesburguer-stock-0.0.1-SNAPSHOT.jar"]
