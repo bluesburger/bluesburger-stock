@@ -165,6 +165,13 @@
 		    <version>2.1.6</version>
 		</dependency>
 		
+		<!-- Open Feign -->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-openfeign</artifactId>
+			<version>4.1.1</version>
+		</dependency>
+		
 		<!-- Consul Service Discovery -->
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
